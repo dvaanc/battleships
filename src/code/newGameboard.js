@@ -5,6 +5,7 @@ class Gameboard {
     this.board = [];
     this.lastHit = {
       hit: false,
+      location: null,
     };
   }
 
@@ -30,6 +31,8 @@ class Gameboard {
     if (this.board[coord].miss) return;
     if (this.board[coord].hasShip) {
       this.board[coord].hit = true;
+      this.lastHit.hit = true;
+      this.lastHit.location = coord;
     }
   }
 
