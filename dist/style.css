@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(132, 161, 180);
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.one {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5vh;
+  width: 100%;
+  font-size: 30px;
+  padding: 80px;
+  border-bottom: 3px solid #fff;
+}
+
+.two {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 100%;
+}
+
+.two-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 50%;
+  background-color: rgb(243, 243, 243);
+  font-size: 20px;
+  border-radius: 10px;
+  border: 3px solid grey;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.three {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 25px;
+  width: 100%;
+  height: 1000px;
+}
+
+.three:first-child {
+  margin-right: 20px;
+}
+
+.gameboard {
+  display: grid;
+  grid-template-columns: repeat(10, auto);
+  grid-template-rows: repeat(10, auto);
+  gap: 2px;
+  height: 50%;
+  width: 450px;
+  background-color: rgb(88, 150, 185);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+.cell {
+  border: 2px solid black;
+}
+
+.cell:hover {
+  background-color: rgb(133, 179, 204);
+}
+
+#enemy .cell {
+  cursor: crosshair;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5vh;
+  background-color: #403E39;
+  color: #fff;
+  font-family: var(--body-font);
+}
