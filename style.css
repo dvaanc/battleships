@@ -52,14 +52,10 @@ body {
   height: 1000px;
 }
 
-.three:first-child {
-  margin-right: 20px;
-}
-
 .gameboard {
   display: grid;
-  grid-template-columns: repeat(10, auto);
-  grid-template-rows: repeat(10, auto);
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
   gap: 2px;
   height: 50%;
   width: 450px;
@@ -67,14 +63,28 @@ body {
   padding: 10px;
   border-radius: 10px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  margin-right: 30px;
 }
 
 .cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: 2px solid black;
+  font-size: 30px;
+  color: white;
 }
 
 .cell:hover {
   background-color: rgb(133, 179, 204);
+}
+
+.hit {
+  background-color: rgb(184, 81, 81);
+}
+
+.hit:hover {
+  background-color: rgb(180, 118, 118);
 }
 
 #enemy .cell {
