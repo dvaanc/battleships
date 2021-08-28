@@ -6,13 +6,9 @@ class Player {
     this.currentMove = null;
   }
 
-  static randomNumber(val) {
-    return Math.floor(Math.random() * val);
-  }
-
-  callRandomNumber(val) {
-    return this.constructor.randomNumber(val);
-  }
+  // callRandomNumber(val) {
+  //   return this.constructor.randomNumber(val);
+  // }
 
   randomMove() {
     const coord = this.callRandomNumber(100);

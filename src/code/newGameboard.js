@@ -1,8 +1,11 @@
+import { type, Ship} from './newShip';
+
 // eslint-disable-next-line no-unused-vars
 class Gameboard {
   constructor(val = 100) {
     this.val = val;
     this.board = [];
+    this.fleet = [];
     this.lastHit = {
       hit: false,
       location: null,
@@ -13,6 +16,13 @@ class Gameboard {
     for (let i = 0; i < this.val; i += 1) {
       this.board.push({ hasShip: false, hit: false, miss: false });
     }
+  }
+
+  generateFleet() {
+    Object.keys(type).forEach((key) => {
+      const ship = new Ship(type[key]);
+      this.fleet.push(ship);
+    });
   }
 
   placeShip(ship, startCoord) {
