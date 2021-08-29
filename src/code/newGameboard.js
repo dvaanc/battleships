@@ -18,22 +18,47 @@ class Gameboard {
     }
   }
 
+  static randomNumber(val) {
+    return Math.floor(Math.random() * val);
+  }
+
+  callRandomNumber(val) {
+    return this.constructor.randomNumber(val);
+  }
+
   generateFleet() {
     Object.keys(type).forEach((key) => {
       const ship = new Ship(type[key]);
       this.fleet.push(ship);
+      console.log(this.fleet);
     });
   }
 
   placeShip(ship, startCoord) {
     if (ship.isVertical) {
       for (let i = 0; i <= ship.hp.length; i += 1) {
+        if (this.board[startCoord + i * 10].hasShip !== false) {
+          console.log('Error! Placement clashes with another placed ship!');
+          return this.placeShip(ship, startCoord);
+        }
         this.board[startCoord + i * 10].hasShip = ship.type;
       }
-    } else {
+    }
+    if (!ship.isVertical) {
       for (let i = 0; i <= ship.hp.length; i += 1) {
+        if (this.board[startCoord + i].hasShip !== false) {
+          console.log('Error! Placement clashes with another placed ship!');
+          return this.placeShip(ship, startCoord);
+        }
         this.board[startCoord + i].hasShip = ship.type;
       }
+    }
+    return null;
+  }
+
+  randomShipPlacement() {
+    for (let i = 0; i <= this.fleet.length; i += 1) {
+      this.placeShip(this.fleet[i], this.callRandomNumber(this.val));
     }
   }
 

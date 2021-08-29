@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { type, Ship } from './newShip';
 import Player from './newPlayer';
 import Gameboard from './newGameboard';
@@ -6,45 +7,24 @@ import Gameboard from './newGameboard';
 const DOM = (function () {
   const playerGameboard = document.querySelector('#player');
   const enemyGameboard = document.querySelector('#enemy');
+  const playerGameboardCells = Array.from(playerGameboard.children);
+  const enemyGameboardCells = Array.from(enemyGameboard.children);
+
+  playerGameboard.addEventListener('click', (e) => {
+    // const cells = Array.from(e.target.parentNode.children);
+    console.log(playerGameboardCells.indexOf(e.target));
+  });
+
+  enemyGameboard.addEventListener('click', (e) => {
+    game.gameLoop(enemyGameboardCells.indexOf(e.target));
+  });
 
   function setMessage(str) {
     const messageEl = document.querySelector('#message');
     messageEl.innerText = str;
   }
 
-  function updatePlayerGameboard(gameboard) {
-    const playerGameboardCells = Array.from(playerGameboard.children);
-    playerGameboardCells.forEach((cell) => {
-      const i = playerGameboardCells.indexOf(cell);
-      console.log(i);
-      if (gameboard[i].hit) {
-        cell.classList.add('hit');
-      }
-      if (gameboard[i].miss) {
-        // eslint-disable-next-line no-param-reassign
-        cell.innerText = 'X';
-      }
-      console.log(cell);
-    });
-  }
-
-  function updateEnemyGameboard(gameboard) {
-    const enemyGameboardCells = Array.from(enemyGameboard.children);
-    enemyGameboardCells.forEach((cell) => {
-      const i = enemyGameboardCells.indexOf(cell);
-      console.log(i);
-      if (gameboard[i].hit) {
-        cell.classList.add('hit');
-      }
-      if (gameboard[i].miss) {
-        // eslint-disable-next-line no-param-reassign
-        cell.innerText = 'X';
-      }
-      console.log(cell);
-    });
-  }
-
-  return { setMessage, updatePlayerGameboard, updateEnemyGameboard };
+  return { setMessage, playerGameboardCells, enemyGameboardCells };
 }());
 
 const game = (function () {
@@ -53,15 +33,52 @@ const game = (function () {
   const playerGameboard = new Gameboard();
   const enemyGameboard = new Gameboard();
 
-  function render() {
+  function initialiseGame() {
+    playerGameboard.initialiseBoard();
+    enemyGameboard.initialiseBoard();
+    playerGameboard.generateFleet();
+    enemyGameboard.generateFleet();
+  }
+
+  function randomShipPlacement(boolean) {
+    if(boolean === true) playerGameboard.randomShipPlacement();
+  }
+
+  function gameLoop(index) {
 
   }
 
-  function randomNumber(val) {
-    return Math.floor(Math.random() * val);
+  function render(gameboard) {
+    DOM.playerGameboardCells.forEach((cell) => {
+      const i = DOM.playerGameboardCells.indexOf(cell);
+      console.log(i);
+      if (gameboard[i].hit) {
+        cell.classList.add('hit');
+      }
+      if (gameboard[i].miss) {
+        // eslint-disable-next-line no-param-reassign
+        cell.innerText = 'X';
+      }
+      console.log(cell);
+    });
+
+    DOM.enemyGameboardCells.forEach((cell) => {
+      const i = DOM.enemyGameboardCells.indexOf(cell);
+      console.log(i);
+      if (gameboard[i].hit) {
+        cell.classList.add('hit');
+      }
+      if (gameboard[i].miss) {
+        // eslint-disable-next-line no-param-reassign
+        cell.innerText = 'X';
+      }
+      console.log(cell);
+    });
   }
 
-  return { };
+  return {
+    render, gameLoop, initialiseGame, randomShipPlacement,
+  };
 }());
 
 export { DOM, game };
