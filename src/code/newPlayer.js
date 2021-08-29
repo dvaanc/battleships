@@ -6,14 +6,19 @@ class Player {
     this.currentMove = null;
   }
 
-  // callRandomNumber(val) {
-  //   return this.constructor.randomNumber(val);
-  // }
+  static randomNumber(val) {
+    return Math.floor(Math.random() * val);
+  }
+
+  callRandomNumber(val) {
+    return this.constructor.randomNumber(val);
+  }
 
   randomMove() {
     const coord = this.callRandomNumber(100);
     if (this.pastHits.some((pastHit) => pastHit === coord)) return this.callRandomNumber(100);
     this.pastHits.push(coord);
+    this.currentMove = coord;
     return coord;
   }
 

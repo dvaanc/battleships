@@ -41,11 +41,23 @@ const game = (function () {
   }
 
   function randomShipPlacement(boolean) {
-    if(boolean === true) playerGameboard.randomShipPlacement();
+    if (boolean === true) playerGameboard.randomShipPlacement();
+    enemyGameboard.randomShipPlacement();
   }
 
   function gameLoop(index) {
+    enemyGameboard.receiveAttack(index);
+    computer.randomMove();
+    playerGameboard.receiveAttack(computer.currentMove);
+  }
 
+  function isGameOver() {
+    if (enemyGameboard.allShipsSunk() === false) {
+      DOM.setMessage(`${player.name} wins! Computers ships have been sunk!`);
+    }
+    if (playerGameboard.allShipsSunk() === false) {
+      DOM.setMessage(`${computer.name} wins! Players ships have been sunk!`);
+    }
   }
 
   function render(gameboard) {
