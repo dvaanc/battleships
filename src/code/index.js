@@ -12,7 +12,7 @@ const DOM = (function () {
 
   playerGameboard.addEventListener('click', (e) => {
     // const cells = Array.from(e.target.parentNode.children);
-    console.log(playerGameboardCells.indexOf(e.target));
+    // console.log(playerGameboardCells.indexOf(e.target));
   });
 
   enemyGameboard.addEventListener('click', (e) => {
@@ -41,7 +41,7 @@ const game = (function () {
   }
 
   function randomShipPlacement(boolean) {
-    if (boolean === true) playerGameboard.randomShipPlacement();
+    // if (boolean === true) playerGameboard.randomShipPlacement();
     enemyGameboard.randomShipPlacement();
   }
 
@@ -63,7 +63,6 @@ const game = (function () {
   function render(gameboard) {
     DOM.playerGameboardCells.forEach((cell) => {
       const i = DOM.playerGameboardCells.indexOf(cell);
-      console.log(i);
       if (gameboard[i].hit) {
         cell.classList.add('hit');
       }
@@ -71,7 +70,6 @@ const game = (function () {
         // eslint-disable-next-line no-param-reassign
         cell.innerText = 'X';
       }
-      console.log(cell);
     });
 
     DOM.enemyGameboardCells.forEach((cell) => {
@@ -89,8 +87,15 @@ const game = (function () {
   }
 
   return {
-    render, gameLoop, initialiseGame, randomShipPlacement,
+    render, gameLoop, randomShipPlacement, playerGameboard, enemyGameboard, initialiseGame,
   };
 }());
+
+game.initialiseGame();
+
+// console.log(game.playerGameboard);
+// console.log(game.enemyGameboard);
+
+game.randomShipPlacement();
 
 export { DOM, game };
