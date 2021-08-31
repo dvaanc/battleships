@@ -41,7 +41,7 @@ const game = (function () {
   }
 
   function randomShipPlacement(boolean) {
-    // if (boolean === true) playerGameboard.randomShipPlacement();
+    if (boolean === true) playerGameboard.randomShipPlacement();
     enemyGameboard.randomShipPlacement();
   }
 
@@ -96,6 +96,6 @@ game.initialiseGame();
 // console.log(game.playerGameboard);
 // console.log(game.enemyGameboard);
 
-game.randomShipPlacement();
+game.randomShipPlacement(true);
 
 export { DOM, game };

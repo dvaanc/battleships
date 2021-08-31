@@ -14,10 +14,14 @@ class Gameboard {
 
   initialiseBoard() {
     for (let i = 0; i < this.val; i += 1) {
-      this.board.push({ 
+      this.board.push({
         hasShip: false, shipType: null, hit: false, miss: false,
       });
     }
+  }
+
+  clearBoard() {
+    this.board = [];
   }
 
   static randomNumber(val) {
@@ -36,8 +40,8 @@ class Gameboard {
   }
 
   placeShip(ship, startCoord) {
-    if (ship.isVertical) {
-      for (let i = 0; i < ship.hp.length; i += 1) {
+    if (ship.isVertical === true) {
+      for (let i = 0; i < ship.length; i += 1) {
         if (this.isOutOfBounds(startCoord + i * 10)) {
           console.log('Out of bounds!');
           return true;
@@ -47,13 +51,14 @@ class Gameboard {
           return true;
         }
       }
-      for (let i = 0; i < ship.hp.length; i += 1) {
+      for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i * 10].shipType = ship.type;
         this.board[startCoord + i * 10].hasShip = true;
         console.log(this.board[startCoord + i * 10]);
       }
-    } else {
-      for (let i = 0; i <= ship.hp.length; i += 1) {
+    }
+    if (ship.isVertical === false) {
+      for (let i = 0; i < ship.length; i += 1) {
         if (this.isOutOfBounds(startCoord + i)) {
           console.log('Out of bounds!');
           return true;
@@ -63,7 +68,7 @@ class Gameboard {
           return true;
         }
       }
-      for (let i = 0; i <= ship.hp.length; i += 1) {
+      for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i].shipType = ship.type;
         this.board[startCoord + i].hasShip = true;
         console.log(this.board[startCoord + i]);
@@ -73,14 +78,23 @@ class Gameboard {
   }
 
   randomShipPlacement() {
+    console.log(this.fleet);
     for (let i = 0; i < this.fleet.length; i += 1) {
       if (this.callRandomNumber(2) === 0) {
         this.fleet[i].isVertical = false;
+      } else {
+        this.fleet[i].isVertical = true;
       }
     }
     for (let i = 0; i < this.fleet.length; i += 1) {
-      this.placeShip(this.fleet[i], this.callRandomNumber(this.val));
+      if (this.placeShip(this.fleet[i], this.callRandomNumber(this.val)) === true) {
+        this.clearBoard();
+        this.initialiseBoard();
+        return this.randomShipPlacement();
+      }
     }
+    console.log(this.board);
+    return null;
     // console.log(this.fleet[0]);
     // this.placeShip(this.fleet[0], this.callRandomNumber(this.val));
   }
