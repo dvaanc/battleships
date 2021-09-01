@@ -47,22 +47,29 @@ const game = (function () {
   }
 
   function gameLoop(index) {
-    enemyGameboard.receiveAttack(index);
+    if (enemyGameboard.receiveAttack(index)) {
+      const shipIfHit = enemyGameboard.filterByShipType();
+    }
     enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
-    if (isGameOver()) {
+    if (isGameOver() === true) {
       DOM.setMessage('Player wins!');
     }
 
     computer.randomMove();
     playerGameboard.receiveAttack(computer.currentMove);
     playerGameboard.renderToDOM(DOM.playerGameboardCells);
-    if (isGameOver()) {
+    if (isGameOver() === true) {
       DOM.setMessage('Computer wins!');
     }
   }
 
   function isGameOver() {
-    if (enemyGameboard.allShipsSunk() || playerGameboard.allShipsSunk() === false) return true;
+    if (playerGameboard.allShipsSunk() === true) {
+      DOM.setMessage('Computer wins!');
+    }
+    if (enemyGameboard.allShipsSunk() === true) {
+      DOM.setMessage('Player wins!');
+    }
   }
 
   // function renderPlayerGameboard() {

@@ -109,17 +109,24 @@ class Gameboard {
   }
 
   receiveAttack(coord) {
-    if (this.board[coord].miss) return;
+    if (this.board[coord].miss) return false;
+    if (this.board[coord].hit) return false;
     if (this.board[coord].hasShip) {
       this.board[coord].hit = true;
       this.lastHit.hit = true;
       this.lastHit.location = coord;
     }
+    return true;
   }
 
-  filterByShipType(name) {
+  hpOfShip(name) {
     const shipArr = this.board.filter((index) => index.shipType === name);
-    return shipArr;
+    console.log(filterFleet = this.fleet.filter((index) => index.shipType === name));
+    const filterFromFleet = this.fleet.filter((index) => index.type === name);
+    console.log(filterFleet);
+    // for (let i = 0; i < filterFromFleet.length; i += 1) {
+    //   if 
+    // }
   }
 
   isOutOfBounds(coord) {
@@ -128,7 +135,10 @@ class Gameboard {
   }
 
   allShipsSunk() {
-    return this.board.some((cell) => cell.hasShip !== false && cell.hit === false);
+    const ShipsOnlyArr = this.board.filter((i) => i.hasShip === true);
+    console.log(ShipsOnlyArr.every((i) => i.hit === true));
+    return ShipsOnlyArr.every((i) => i.hit === true);
+    // return this.board.some((cell) => cell.hasShip === true && cell.hit === false);
   }
 }
 export default Gameboard;
