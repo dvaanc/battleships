@@ -17,6 +17,7 @@ const DOM = (function () {
 
   enemyGameboard.addEventListener('click', (e) => {
     game.gameLoop(enemyGameboardCells.indexOf(e.target));
+    console.log(enemyGameboardCells.indexOf(e.target));
   });
 
   function setMessage(str) {
@@ -47,47 +48,55 @@ const game = (function () {
 
   function gameLoop(index) {
     enemyGameboard.receiveAttack(index);
+    enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
+    if (isGameOver()) {
+      DOM.setMessage('Player wins!');
+    }
+
     computer.randomMove();
     playerGameboard.receiveAttack(computer.currentMove);
+    playerGameboard.renderToDOM(DOM.playerGameboardCells);
+    if (isGameOver()) {
+      DOM.setMessage('Computer wins!');
+    }
   }
 
   function isGameOver() {
-    if (enemyGameboard.allShipsSunk() === false) {
-      DOM.setMessage(`${player.name} wins! Computers ships have been sunk!`);
-    }
-    if (playerGameboard.allShipsSunk() === false) {
-      DOM.setMessage(`${computer.name} wins! Players ships have been sunk!`);
-    }
+    if (enemyGameboard.allShipsSunk() || playerGameboard.allShipsSunk() === false) return true;
   }
 
-  function render(gameboard) {
-    DOM.playerGameboardCells.forEach((cell) => {
-      const i = DOM.playerGameboardCells.indexOf(cell);
-      if (gameboard[i].hit) {
-        cell.classList.add('hit');
-      }
-      if (gameboard[i].miss) {
-        // eslint-disable-next-line no-param-reassign
-        cell.innerText = 'X';
-      }
-    });
+  // function renderPlayerGameboard() {
+  //   DOM.playerGameboardCells.forEach((cell) => {
+  //     const i = DOM.playerGameboardCells.indexOf(cell);
+  //     if (playerGameboard.this.board[i].hit) {
+  //       cell.classList.add('hit');
+  //     }
+  //     if (playerGameboard.this.board[i].miss) {
+  //       // eslint-disable-next-line no-param-reassign
+  //       cell.innerText = 'X';
+  //     }
+  //   });
+  // }
 
-    DOM.enemyGameboardCells.forEach((cell) => {
-      const i = DOM.enemyGameboardCells.indexOf(cell);
-      console.log(i);
-      if (gameboard[i].hit) {
-        cell.classList.add('hit');
-      }
-      if (gameboard[i].miss) {
-        // eslint-disable-next-line no-param-reassign
-        cell.innerText = 'X';
-      }
-      console.log(cell);
-    });
-  }
+  // function renderEnemyGameboard() {
+  //   DOM.enemyGameboardCells.forEach((cell) => {
+  //     const i = DOM.enemyGameboardCells.indexOf(cell);
+  //     console.log(i);
+  //     console.log(enemyGameboard.this.board);
+  //     console.log(enemyGameboard.this.board[i]);
+  //     if (enemyGameboard.this.board[i].hit) {
+  //       cell.classList.add('hit');
+  //     }
+  //     if (enemyGameboard.this.board[i].miss) {
+  //       // eslint-disable-next-line no-param-reassign
+  //       cell.innerText = 'X';
+  //     }
+  //     console.log(cell);
+  //   });
+  // }
 
   return {
-    render, gameLoop, randomShipPlacement, playerGameboard, enemyGameboard, initialiseGame,
+    gameLoop, randomShipPlacement, playerGameboard, enemyGameboard, initialiseGame,
   };
 }());
 

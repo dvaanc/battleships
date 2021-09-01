@@ -24,6 +24,15 @@ class Gameboard {
     this.board = [];
   }
 
+  renderToDOM(DOMBoard) {
+    this.board.forEach((index) => {
+      const i = this.board.indexOf(index);
+      if (index.hit) DOMBoard[i].classList.add('hit');
+      // eslint-disable-next-line no-param-reassign
+      if (index.miss) DOMBoard[i].innerText = 'X';
+    });
+  }
+
   static randomNumber(val) {
     return Math.floor(Math.random() * val);
   }
@@ -106,6 +115,11 @@ class Gameboard {
       this.lastHit.hit = true;
       this.lastHit.location = coord;
     }
+  }
+
+  filterByShipType(name) {
+    const shipArr = this.board.filter((index) => index.shipType === name);
+    return shipArr;
   }
 
   isOutOfBounds(coord) {
