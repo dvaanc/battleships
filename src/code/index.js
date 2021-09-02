@@ -46,21 +46,21 @@ const game = (function () {
     enemyGameboard.randomShipPlacement();
   }
 
-  function gameLoop(index) {
-    if (enemyGameboard.receiveAttack(index)) {
-      const shipIfHit = enemyGameboard.filterByShipType();
+  function gameLoop(coord) {
+    if (enemyGameboard.receiveAttack(coord)) {
+      enemyGameboard.hpHit(enemyGameboard.getNameOfShip(coord));
+      enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
+      if (isGameOver()) {
+        DOM.setMessage('Player wins!');
+      }
     }
-    enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
-    if (isGameOver() === true) {
-      DOM.setMessage('Player wins!');
-    }
-
     computer.randomMove();
     playerGameboard.receiveAttack(computer.currentMove);
     playerGameboard.renderToDOM(DOM.playerGameboardCells);
     if (isGameOver() === true) {
       DOM.setMessage('Computer wins!');
     }
+    return null;
   }
 
   function isGameOver() {
@@ -108,10 +108,6 @@ const game = (function () {
 }());
 
 game.initialiseGame();
-
-// console.log(game.playerGameboard);
-// console.log(game.enemyGameboard);
-
 game.randomShipPlacement(true);
 
 export { DOM, game };

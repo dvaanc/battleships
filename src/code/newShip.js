@@ -30,13 +30,12 @@ class Ship {
     this.isVertical = vertical;
   }
 
-  hit(arr) {
-    for (let i = 0; i < arr.length; i += 1) {
-      if (arr[i].hit) this.hp[i] = true;
-    }
+  hit(index) {
+    // for (let i = 0; i < arr.length; i += 1) {
+    //   if (arr[i].hit) this.hp[i] = true;
+    // }
+    this.hp[index] = true;
     return null;
-    // this.hp[index] = true;
-    // return null;
   }
 
   isDestroyed() {

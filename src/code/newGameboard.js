@@ -80,14 +80,13 @@ class Gameboard {
       for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i].shipType = ship.type;
         this.board[startCoord + i].hasShip = true;
-        console.log(this.board[startCoord + i]);
+        // console.log(this.board[startCoord + i]);
       }
     }
     return null;
   }
 
   randomShipPlacement() {
-    console.log(this.fleet);
     for (let i = 0; i < this.fleet.length; i += 1) {
       if (this.callRandomNumber(2) === 0) {
         this.fleet[i].isVertical = false;
@@ -102,31 +101,36 @@ class Gameboard {
         return this.randomShipPlacement();
       }
     }
-    console.log(this.board);
     return null;
     // console.log(this.fleet[0]);
     // this.placeShip(this.fleet[0], this.callRandomNumber(this.val));
   }
 
   receiveAttack(coord) {
-    if (this.board[coord].miss) return false;
-    if (this.board[coord].hit) return false;
+    console.log(this.board[coord]);
+    if (this.board[coord].miss || this.board[coord].hit) return false;
     if (this.board[coord].hasShip) {
       this.board[coord].hit = true;
       this.lastHit.hit = true;
       this.lastHit.location = coord;
     }
+    if (!this.board[coord].hasShip) {
+      this.board[coord].miss = true;
+    }
     return true;
   }
 
-  hpOfShip(name) {
-    const shipArr = this.board.filter((index) => index.shipType === name);
-    console.log(filterFleet = this.fleet.filter((index) => index.shipType === name));
-    const filterFromFleet = this.fleet.filter((index) => index.type === name);
-    console.log(filterFleet);
-    // for (let i = 0; i < filterFromFleet.length; i += 1) {
-    //   if 
-    // }
+  getNameOfShip(coord) {
+    if (this.board[coord].hasShip) return this.board[coord].shipType;
+    return false;
+  }
+
+  hpHit(name) {
+    const shipArr = this.board.filter((coord) => coord.shipType === name);
+    const findCorrectShip = this.fleet.filter((ship) => ship.type === name);
+    for (let i = 0; i < shipArr.length; i += 1) {
+      if (shipArr[i].hit) findCorrectShip[0].hit(i);
+    }
   }
 
   isOutOfBounds(coord) {
@@ -135,10 +139,10 @@ class Gameboard {
   }
 
   allShipsSunk() {
-    const ShipsOnlyArr = this.board.filter((i) => i.hasShip === true);
-    console.log(ShipsOnlyArr.every((i) => i.hit === true));
-    return ShipsOnlyArr.every((i) => i.hit === true);
-    // return this.board.some((cell) => cell.hasShip === true && cell.hit === false);
+    // const ShipsOnlyArr = this.board.filter((i) => i.hasShip === true);
+    // console.log(ShipsOnlyArr.every((i) => i.hit === true));
+    // return ShipsOnlyArr.every((i) => i.hit === true);
+    return this.fleet.every((ship) => ship.isDestroyed() === true);
   }
 }
 export default Gameboard;
