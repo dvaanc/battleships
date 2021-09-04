@@ -10,14 +10,16 @@ const DOM = (function () {
   const playerGameboardCells = Array.from(playerGameboard.children);
   const enemyGameboardCells = Array.from(enemyGameboard.children);
 
-  playerGameboard.addEventListener('click', (e) => {
-    // const cells = Array.from(e.target.parentNode.children);
-    // console.log(playerGameboardCells.indexOf(e.target));
-  });
+  // playerGameboard.addEventListener('click', (e) => {
+  //   // const cells = Array.from(e.target.parentNode.children);
+  //   // console.log(playerGameboardCells.indexOf(e.target));
+  // });
 
   enemyGameboard.addEventListener('click', (e) => {
-    game.gameLoop(enemyGameboardCells.indexOf(e.target));
-    console.log(enemyGameboardCells.indexOf(e.target));
+    if (e.target.classList.contains('cell')) {
+      game.gameLoop(enemyGameboardCells.indexOf(e.target));
+      console.log(enemyGameboardCells.indexOf(e.target));
+    }
   });
 
   function setMessage(str) {
@@ -47,12 +49,14 @@ const game = (function () {
   }
 
   function gameLoop(coord) {
-    if (enemyGameboard.receiveAttack(coord)) {
+    if (enemyGameboard.receiveAttack(coord) === true) {
       enemyGameboard.hpHit(enemyGameboard.getNameOfShip(coord));
       enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
       if (isGameOver()) {
         DOM.setMessage('Player wins!');
       }
+    } else {
+      return null;
     }
     computer.randomMove();
     playerGameboard.receiveAttack(computer.currentMove);
