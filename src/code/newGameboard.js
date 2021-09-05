@@ -20,8 +20,11 @@ class Gameboard {
     }
   }
 
-  clearBoard() {
+  clearGameboard() {
     this.board = [];
+    this.fleet = [];
+    this.lastHit.hit = false;
+    this.lastHit.location = null;
   }
 
   renderToDOM(DOMBoard) {
@@ -97,7 +100,7 @@ class Gameboard {
     }
     for (let i = 0; i < this.fleet.length; i += 1) {
       if (this.placeShip(this.fleet[i], this.callRandomNumber(this.val)) === true) {
-        this.clearBoard();
+        this.clearGameboard();
         this.initialiseBoard();
         return this.randomShipPlacement();
       }
