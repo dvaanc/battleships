@@ -31,11 +31,8 @@ class Ship {
   }
 
   hit(index) {
-    // for (let i = 0; i < arr.length; i += 1) {
-    //   if (arr[i].hit) this.hp[i] = true;
-    // }
     this.hp[index] = true;
-    return null;
+    return this.hp;
   }
 
   isDestroyed() {

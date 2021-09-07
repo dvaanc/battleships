@@ -7,48 +7,27 @@ import Gameboard from './newGameboard';
 const DOM = (function () {
   const playerGameboard = document.querySelector('#player');
   const enemyGameboard = document.querySelector('#enemy');
-  const gameboards = document.querySelectorAll('.gameboard');
-  const gameboardHolder = document.querySelector('.gameboardHolder');
   const playerGameboardCells = Array.from(playerGameboard.children);
   const enemyGameboardCells = Array.from(enemyGameboard.children);
-  const restart = document.querySelector('#restart');
-  const cell = document.querySelectorAll('.cell');
 
-  playerGameboard.addEventListener('click', (e) => {
-    // const cells = Array.from(e.target.parentNode.children);
-    // console.log(playerGameboardCells.indexOf(e.target));
-  });
+  // playerGameboard.addEventListener('click', (e) => {
+  //   // const cells = Array.from(e.target.parentNode.children);
+  //   // console.log(playerGameboardCells.indexOf(e.target));
+  // });
 
   enemyGameboard.addEventListener('click', (e) => {
-    game.gameLoop(enemyGameboardCells.indexOf(e.target));
-    console.log(enemyGameboardCells.indexOf(e.target));
+    if (e.target.classList.contains('cell')) {
+      game.gameLoop(enemyGameboardCells.indexOf(e.target));
+      console.log(enemyGameboardCells.indexOf(e.target));
+    }
   });
-
-  restart.addEventListener('click', (e) => {
-    game.restartGame();
-  });
-
-  function clearBoard() {
-    cell.forEach((e) => {
-      e.innerText = '';
-      e.classList.remove('cell');
-    });
-  }
 
   function setMessage(str) {
     const messageEl = document.querySelector('#message');
     messageEl.innerText = str;
   }
 
-  function gameOver() {
-    gameboards.forEach((e) => {
-      e.classList.add('disable');
-    });
-  }
-
-  return {
-    clearBoard, setMessage, gameOver, playerGameboardCells, enemyGameboardCells,
-  };
+  return { setMessage, playerGameboardCells, enemyGameboardCells };
 }());
 
 const game = (function () {
@@ -69,41 +48,41 @@ const game = (function () {
     enemyGameboard.randomShipPlacement();
   }
 
+  // function gameLoop(index) {
+  //   enemyGameboard.receiveAttack(index);
+  //   enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
+  //   if (isGameOver()) {
+  //     DOM.setMessage('Player wins!');
+  //   }
   function gameLoop(coord) {
-    if (enemyGameboard.receiveAttack(coord)) {
+    if (enemyGameboard.receiveAttack(coord) === true) {
       enemyGameboard.hpHit(enemyGameboard.getNameOfShip(coord));
       enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
-      if (isGameOver()) {
-        DOM.gameOver();
-        DOM.setMessage('Player wins!');
+      if (enemyGameboard.allShipsSunk()) {
+        console.log('enemy all ships sunk');
+      }
+      // if (isGameOver()) {
+      //   console.log(isGameOver());
+      //   // DOM.gameOver();
+      //   DOM.setMessage('Player wins!');
+      // }
+      computer.randomMove();
+      playerGameboard.receiveAttack(computer.currentMove);
+      playerGameboard.renderToDOM(DOM.playerGameboardCells);
+      if (playerGameboard.allShipsSunk()) {
+        console.log('player ships all sunk');
       }
     }
-    computer.randomMove();
-    playerGameboard.receiveAttack(computer.currentMove);
-    playerGameboard.renderToDOM(DOM.playerGameboardCells);
-    if (isGameOver() === true) {
-      DOM.gameOver();
-      DOM.setMessage('Computer wins!');
-    }
-    return null;
+
+    // if (isGameOver()) {
+    //   DOM.setMessage('Computer wins!');
+    // }
   }
 
-  function restartGame() {
-    DOM.clearBoard();
-    playerGameboard.clearGameboard();
-    playerGameboard.initialiseBoard();
-    playerGameboard.generateFleet();
-
-    enemyGameboard.clearGameboard();
-    enemyGameboard.initialiseBoard();
-    enemyGameboard.generateFleet();
-  }
-
-  function isGameOver() {
-    if (playerGameboard.allShipsSunk() === true) return true;
-    if (enemyGameboard.allShipsSunk() === true) return true;
-    return false;
-  }
+  // function isGameOver() {
+  //   if (enemyGameboard.allShipsSunk() || playerGameboard.allShipsSunk() === false) return true;
+  //   return false;
+  // }
 
   // function renderPlayerGameboard() {
   //   DOM.playerGameboardCells.forEach((cell) => {
@@ -136,11 +115,15 @@ const game = (function () {
   // }
 
   return {
-    gameLoop, randomShipPlacement, playerGameboard, enemyGameboard, initialiseGame, restartGame,
+    gameLoop, randomShipPlacement, playerGameboard, enemyGameboard, initialiseGame,
   };
 }());
 
 game.initialiseGame();
+
+// console.log(game.playerGameboard);
+// console.log(game.enemyGameboard);
+
 game.randomShipPlacement(true);
 
 export { DOM, game };
