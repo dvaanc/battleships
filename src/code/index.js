@@ -14,16 +14,14 @@ const DOM = (function () {
   const restart = document.querySelector('#restart');
   const cell = document.querySelectorAll('.cell');
 
-  // playerGameboard.addEventListener('click', (e) => {
-  //   // const cells = Array.from(e.target.parentNode.children);
-  //   // console.log(playerGameboardCells.indexOf(e.target));
-  // });
+  playerGameboard.addEventListener('click', (e) => {
+    // const cells = Array.from(e.target.parentNode.children);
+    // console.log(playerGameboardCells.indexOf(e.target));
+  });
 
   enemyGameboard.addEventListener('click', (e) => {
-    if (e.target.classList.contains('cell')) {
-      game.gameLoop(enemyGameboardCells.indexOf(e.target));
-      console.log(enemyGameboardCells.indexOf(e.target));
-    }
+    game.gameLoop(enemyGameboardCells.indexOf(e.target));
+    console.log(enemyGameboardCells.indexOf(e.target));
   });
 
   restart.addEventListener('click', (e) => {
@@ -72,15 +70,13 @@ const game = (function () {
   }
 
   function gameLoop(coord) {
-    if (enemyGameboard.receiveAttack(coord) === true) {
+    if (enemyGameboard.receiveAttack(coord)) {
       enemyGameboard.hpHit(enemyGameboard.getNameOfShip(coord));
       enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
       if (isGameOver()) {
         DOM.gameOver();
         DOM.setMessage('Player wins!');
       }
-    } else {
-      return null;
     }
     computer.randomMove();
     playerGameboard.receiveAttack(computer.currentMove);

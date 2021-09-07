@@ -1,4 +1,4 @@
-import { type, Ship } from './newShip';
+import { type, Ship} from './newShip';
 
 // eslint-disable-next-line no-unused-vars
 class Gameboard {
@@ -49,7 +49,6 @@ class Gameboard {
       const ship = new Ship(type[shipObj]);
       this.fleet.push(ship);
     });
-    console.log(this.fleet);
   }
 
   placeShip(ship, startCoord) {
@@ -117,12 +116,11 @@ class Gameboard {
       this.board[coord].hit = true;
       this.lastHit.hit = true;
       this.lastHit.location = coord;
-      return true;
     }
-    if (this.board[coord].hasShip === false) {
+    if (!this.board[coord].hasShip) {
       this.board[coord].miss = true;
-      return true;
     }
+    return true;
   }
 
   getNameOfShip(coord) {
