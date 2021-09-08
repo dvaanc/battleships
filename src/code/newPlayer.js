@@ -16,7 +16,11 @@ class Player {
 
   randomMove() {
     const coord = this.callRandomNumber(100);
-    if (this.pastHits.some((pastHit) => pastHit === coord)) return this.callRandomNumber(100);
+    if (this.pastHits.some((pastHit) => pastHit === coord)) {
+      console.log(this.pastHits);
+      return this.randomMove();
+    }
+    console.log(this.pastHits);
     this.pastHits.push(coord);
     this.currentMove = coord;
     return coord;

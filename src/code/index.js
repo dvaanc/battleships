@@ -9,6 +9,7 @@ const DOM = (function () {
   const enemyGameboard = document.querySelector('#enemy');
   const playerGameboardCells = Array.from(playerGameboard.children);
   const enemyGameboardCells = Array.from(enemyGameboard.children);
+  // const restartButton = document.querySelector('#restart');
 
   // playerGameboard.addEventListener('click', (e) => {
   //   // const cells = Array.from(e.target.parentNode.children);
@@ -22,12 +23,37 @@ const DOM = (function () {
     }
   });
 
+  // restartButton.addEventListener('click', () => {
+
+  // });
+
+  // function clearBoard() {
+  //   playerGameboardCells.forEach((cell) => {
+  //     cell.classList.remove('hit');
+  //     cell.innerText = '';
+  //   });
+  //   enemyGameboardCells.forEach((cell) => {
+  //     cell.classList.remove('hit');
+  //     cell.innerText = '';
+  //   });
+  // }
+
   function setMessage(str) {
     const messageEl = document.querySelector('#message');
     messageEl.innerText = str;
   }
 
-  return { setMessage, playerGameboardCells, enemyGameboardCells };
+  // function disableClicks() {
+  //   enemyGameboard.classList.add('disable');
+  // }
+
+  return {
+    setMessage,
+    playerGameboardCells,
+    enemyGameboardCells,
+    // disableClicks,
+    // clearBoard,
+  };
 }());
 
 const game = (function () {
@@ -60,70 +86,35 @@ const game = (function () {
       enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
       if (enemyGameboard.allShipsSunk()) {
         console.log('enemy all ships sunk');
+        // DOM.disableClicks();
       }
-      // if (isGameOver()) {
-      //   console.log(isGameOver());
-      //   // DOM.gameOver();
-      //   DOM.setMessage('Player wins!');
-      // }
       computer.randomMove();
       playerGameboard.receiveAttack(computer.currentMove);
       playerGameboard.renderToDOM(DOM.playerGameboardCells);
       if (playerGameboard.allShipsSunk()) {
         console.log('player ships all sunk');
       }
+      return true;
     }
-
-    // if (isGameOver()) {
-    //   DOM.setMessage('Computer wins!');
-    // }
+    return console.log('attack did not occur due to clicking on a miss or already hit target');
   }
 
-  // function isGameOver() {
-  //   if (enemyGameboard.allShipsSunk() || playerGameboard.allShipsSunk() === false) return true;
-  //   return false;
-  // }
-
-  // function renderPlayerGameboard() {
-  //   DOM.playerGameboardCells.forEach((cell) => {
-  //     const i = DOM.playerGameboardCells.indexOf(cell);
-  //     if (playerGameboard.this.board[i].hit) {
-  //       cell.classList.add('hit');
-  //     }
-  //     if (playerGameboard.this.board[i].miss) {
-  //       // eslint-disable-next-line no-param-reassign
-  //       cell.innerText = 'X';
-  //     }
-  //   });
-  // }
-
-  // function renderEnemyGameboard() {
-  //   DOM.enemyGameboardCells.forEach((cell) => {
-  //     const i = DOM.enemyGameboardCells.indexOf(cell);
-  //     console.log(i);
-  //     console.log(enemyGameboard.this.board);
-  //     console.log(enemyGameboard.this.board[i]);
-  //     if (enemyGameboard.this.board[i].hit) {
-  //       cell.classList.add('hit');
-  //     }
-  //     if (enemyGameboard.this.board[i].miss) {
-  //       // eslint-disable-next-line no-param-reassign
-  //       cell.innerText = 'X';
-  //     }
-  //     console.log(cell);
-  //   });
+  // function restartGame() {
+  //   playerGameboard.clearBoard();
+  //   playerGameboard.initialiseGame();
+  //   initialiseGame();
+  //   randomShipPlacement(true);
   // }
 
   return {
-    gameLoop, randomShipPlacement, playerGameboard, enemyGameboard, initialiseGame,
+    gameLoop,
+    randomShipPlacement,
+    playerGameboard,
+    enemyGameboard,
+    initialiseGame,
+    // restartGame,
   };
 }());
-
 game.initialiseGame();
-
-// console.log(game.playerGameboard);
-// console.log(game.enemyGameboard);
-
 game.randomShipPlacement(true);
-
 export { DOM, game };

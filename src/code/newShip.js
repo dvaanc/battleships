@@ -32,6 +32,9 @@ class Ship {
 
   hit(index) {
     this.hp[index] = true;
+    if (this.isDestroyed()) {
+      console.log(`${this.type} has been destroyed!`);
+    }
     return this.hp;
   }
 

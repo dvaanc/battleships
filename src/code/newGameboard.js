@@ -1,3 +1,4 @@
+import { tsThisType } from '@babel/types';
 import { type, Ship } from './newShip';
 
 // eslint-disable-next-line no-unused-vars
@@ -22,6 +23,7 @@ class Gameboard {
 
   clearBoard() {
     this.board = [];
+    this.fleet = [];
   }
 
   renderToDOM(DOMBoard) {
@@ -108,6 +110,7 @@ class Gameboard {
       if (this.placeShip(this.fleet[i], this.callRandomNumber(this.val)) === true) {
         this.clearBoard();
         this.initialiseBoard();
+        this.generateFleet();
         return this.randomShipPlacement();
       }
     }
