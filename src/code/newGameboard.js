@@ -35,6 +35,16 @@ class Gameboard {
     });
   }
 
+  revealShips(DOMBoard) {
+    this.board.forEach((index) => {
+      const i = this.board.indexOf(index);
+      if (index.hasShip) {
+        DOMBoard[i].classList.add('reveal-cell');
+        console.log(DOMBoard[i]);
+      }
+    });
+  }
+
   static randomNumber(val) {
     return Math.floor(Math.random() * val);
   }
@@ -55,50 +65,50 @@ class Gameboard {
     if (ship.isVertical === true) {
       for (let i = 0; i < ship.length; i += 1) {
         if (this.isOutOfBounds(startCoord + i * 10)) {
-          console.log('Out of bounds!');
+          // console.log('Out of bounds!');
           return true;
         }
         if (this.board[startCoord + i * 10].hasShip === true) {
-          console.log('Error! Placement clashes with another placed ship!');
+          // console.log('Error! Placement clashes with another placed ship!');
           return true;
         }
       }
       for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i * 10].shipType = ship.type;
         this.board[startCoord + i * 10].hasShip = true;
-        console.log(this.board[startCoord + i * 10]);
+        // console.log(this.board[startCoord + i * 10]);
       }
     }
     if (ship.isVertical === false) {
       for (let i = 0; i < ship.length; i += 1) {
         if (this.isOutOfBounds(startCoord + i)) {
-          console.log('Out of bounds!');
+          // console.log('Out of bounds!');
           return true;
         }
         if (i >= 1) {
           const rounded = Math.ceil(startCoord / 10) * 10;
-          console.log(rounded);
+          // console.log(rounded);
           if (startCoord + i >= rounded) {
-            console.log('continues on next line!');
+            // console.log('continues on next line!');
             return true;
           }
         }
         if (this.board[startCoord + i].hasShip === true) {
-          console.log('Error! Placement clashes with another placed ship!');
+          // console.log('Error! Placement clashes with another placed ship!');
           return true;
         }
       }
       for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i].shipType = ship.type;
         this.board[startCoord + i].hasShip = true;
-        console.log(this.board[startCoord + i]);
+        // console.log(this.board[startCoord + i]);
       }
     }
     return null;
   }
 
   randomShipPlacement() {
-    console.log(this.fleet);
+    // console.log(this.fleet);
     for (let i = 0; i < this.fleet.length; i += 1) {
       if (this.callRandomNumber(2) === 0) {
         this.fleet[i].isVertical = false;

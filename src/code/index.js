@@ -9,7 +9,7 @@ const DOM = (function () {
   const enemyGameboard = document.querySelector('#enemy');
   const playerGameboardCells = Array.from(playerGameboard.children);
   const enemyGameboardCells = Array.from(enemyGameboard.children);
-  // const restartButton = document.querySelector('#restart');
+  const restartButton = document.querySelector('#restart');
 
   // playerGameboard.addEventListener('click', (e) => {
   //   // const cells = Array.from(e.target.parentNode.children);
@@ -23,36 +23,44 @@ const DOM = (function () {
     }
   });
 
-  // restartButton.addEventListener('click', () => {
+  restartButton.addEventListener('click', () => {
+    game.restartGame();
+  });
 
-  // });
-
-  // function clearBoard() {
-  //   playerGameboardCells.forEach((cell) => {
-  //     cell.classList.remove('hit');
-  //     cell.innerText = '';
-  //   });
-  //   enemyGameboardCells.forEach((cell) => {
-  //     cell.classList.remove('hit');
-  //     cell.innerText = '';
-  //   });
-  // }
+  function clearBoard() {
+    playerGameboardCells.forEach((cell) => {
+      cell.classList.remove('hit');
+      cell.innerText = '';
+    });
+    enemyGameboardCells.forEach((cell) => {
+      cell.classList.remove('hit');
+      cell.innerText = '';
+    });
+  }
 
   function setMessage(str) {
     const messageEl = document.querySelector('#message');
     messageEl.innerText = str;
   }
 
-  // function disableClicks() {
-  //   enemyGameboard.classList.add('disable');
-  // }
+  function toggleClicks(boolean) {
+    if (boolean) {
+      return enemyGameboard.classList.add('disable');
+    }
+    enemyGameboard.classList.remove('disable');
+    return false;
+  }
+
+  function toggleCells(gameboard) {
+    gameboard.classList.toggle('reveal-cell');
+  }
 
   return {
     setMessage,
     playerGameboardCells,
     enemyGameboardCells,
-    // disableClicks,
-    // clearBoard,
+    toggleClicks,
+    clearBoard,
   };
 }());
 
@@ -63,6 +71,8 @@ const game = (function () {
   const enemyGameboard = new Gameboard();
 
   function initialiseGame() {
+    playerGameboard.clearBoard();
+    enemyGameboard.clearBoard();
     playerGameboard.initialiseBoard();
     enemyGameboard.initialiseBoard();
     playerGameboard.generateFleet();
@@ -86,7 +96,7 @@ const game = (function () {
       enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
       if (enemyGameboard.allShipsSunk()) {
         console.log('enemy all ships sunk');
-        // DOM.disableClicks();
+        DOM.toggleClicks(true);
       }
       computer.randomMove();
       playerGameboard.receiveAttack(computer.currentMove);
@@ -99,12 +109,14 @@ const game = (function () {
     return console.log('attack did not occur due to clicking on a miss or already hit target');
   }
 
-  // function restartGame() {
-  //   playerGameboard.clearBoard();
-  //   playerGameboard.initialiseGame();
-  //   initialiseGame();
-  //   randomShipPlacement(true);
-  // }
+  function restartGame() {
+    DOM.clearBoard();
+    initialiseGame();
+    randomShipPlacement(true);
+    player.clearPastHits();
+    computer.clearPastHits();
+    DOM.toggleClicks();
+  }
 
   return {
     gameLoop,
@@ -112,9 +124,10 @@ const game = (function () {
     playerGameboard,
     enemyGameboard,
     initialiseGame,
-    // restartGame,
+    restartGame,
   };
 }());
 game.initialiseGame();
 game.randomShipPlacement(true);
+game.playerGameboard.revealShips(DOM.playerGameboardCells);
 export { DOM, game };
