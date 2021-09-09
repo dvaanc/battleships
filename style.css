@@ -156,6 +156,9 @@ button:hover {
   height: 100%;
   width: 60%;
 }
+.over {
+  background-color: aqua;
+}
 #ship-list {
   display: flex;
   flex-direction: column;
@@ -180,9 +183,8 @@ button:hover {
   flex-direction: row;
   justify-content: flex-start;
   margin-top: 10px;
-
 }
-#done, #place-random {
+#start, #place-random {
   font-size: 19px;
   height: 60px;
   width: 100px;
