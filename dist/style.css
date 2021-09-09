@@ -87,7 +87,7 @@ body {
 .hit:hover {
   background-color: rgb(247, 151, 151);
 }
-#enemy .cell {
+#enemy .cell, #placeShips-gameboard .cell {
   cursor: crosshair;
 }
 .restart {
@@ -109,7 +109,7 @@ button:hover {
 }
 #placeShips {
   opacity: 1;
-  pointer-events: none;
+  pointer-events: auto;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -130,11 +130,16 @@ button:hover {
   flex-direction: column;
   background-color: #fff;
   border-radius: 5px;
-  padding: 50px;
+  padding: 30px;
   height: 600px;
-  width: 650px;
+  width: 750px;
   max-width: 100%;
   user-select: none;
+  background-color: rgb(88, 150, 185);
+}
+#placeShips-content h2 {
+  margin: 0 130px;
+  margin-bottom: 10px;
 }
 .row {
   display: flex;
@@ -149,7 +154,40 @@ button:hover {
   grid-template-rows: repeat(10, 1fr);
   gap: 2px;
   height: 100%;
-  width: 80%;
+  width: 60%;
+}
+#ship-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+  height: 100%;
+}
+.ship {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+}
+.part {
+  border: 1px solid black;
+  background-color: white;
+  width: 38px;
+  height: 37px;
+  margin-right: 1px;
+}
+.button-control {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 10px;
+
+}
+#done, #place-random {
+  font-size: 19px;
+  height: 60px;
+  width: 100px;
+  padding: 5px;
+  margin-right: 20px;
 }
 footer {
   display: flex;
