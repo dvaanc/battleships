@@ -7,19 +7,42 @@ import Gameboard from './newGameboard';
 const DOM = (function () {
   const playerGameboard = document.querySelector('#player');
   const enemyGameboard = document.querySelector('#enemy');
-  const playerGameboardCells = Array.from(playerGameboard.children);
-  const enemyGameboardCells = Array.from(enemyGameboard.children);
+  const playerGameboardArr = Array.from(playerGameboard.children);
+  const enemyGameboardArr = Array.from(enemyGameboard.children);
   const restartButton = document.querySelector('#restart');
 
-  // playerGameboard.addEventListener('click', (e) => {
-  //   // const cells = Array.from(e.target.parentNode.children);
-  //   // console.log(playerGameboardCells.indexOf(e.target));
-  // });
+  const ships = document.querySelectorAll('.ship');
+  const placeShipsGameboard = document.querySelector('#placeShips-gameboard');
+  const placeShipsCells = placeShipsGameboard.children;
+  const placeShipsGameboardArr = Array.from(placeShipsGameboard.children);
+  const placeRandomButton = document.querySelector('#place-random');
+  const startButton = document.querySelector('#start');
+  console.log(placeShipsCells);
+
+  placeShipsGameboard.addEventListener('click', (e) => {
+    if (e.target.parentNode === placeShipsGameboard) {
+      if (e.target.classList.contains('cell')) {
+        console.log(e.target);
+      }
+    }
+  });
+
+  ships.forEach((ship) => {
+    ship.addEventListener('dragstart', (e) => {
+      e.target.style.opacity = 0.4;
+    }, false);
+    ship.addEventListener('dragend', (e) => {
+      e.target.style.opacity = 1;
+    }, false);
+    ship.addEventListener('dragenter', (e) => {
+      e.target.classList.add('over');
+    }, false);
+  });
 
   enemyGameboard.addEventListener('click', (e) => {
     if (e.target.classList.contains('cell')) {
-      game.gameLoop(enemyGameboardCells.indexOf(e.target));
-      console.log(enemyGameboardCells.indexOf(e.target));
+      game.gameLoop(enemyGameboardArr.indexOf(e.target));
+      console.log(enemyGameboardArr.indexOf(e.target));
     }
   });
 
@@ -28,11 +51,11 @@ const DOM = (function () {
   });
 
   function clearBoard() {
-    playerGameboardCells.forEach((cell) => {
+    playerGameboardArr.forEach((cell) => {
       cell.classList.remove('hit');
       cell.innerText = '';
     });
-    enemyGameboardCells.forEach((cell) => {
+    enemyGameboardArr.forEach((cell) => {
       cell.classList.remove('hit');
       cell.innerText = '';
     });
@@ -57,8 +80,8 @@ const DOM = (function () {
 
   return {
     setMessage,
-    playerGameboardCells,
-    enemyGameboardCells,
+    playerGameboardArr,
+    enemyGameboardArr,
     toggleClicks,
     clearBoard,
   };
@@ -93,14 +116,14 @@ const game = (function () {
   function gameLoop(coord) {
     if (enemyGameboard.receiveAttack(coord) === true) {
       enemyGameboard.hpHit(enemyGameboard.getNameOfShip(coord));
-      enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
+      enemyGameboard.renderToDOM(DOM.enemyGameboardArr);
       if (enemyGameboard.allShipsSunk()) {
         console.log('enemy all ships sunk');
         DOM.toggleClicks(true);
       }
       computer.randomMove();
       playerGameboard.receiveAttack(computer.currentMove);
-      playerGameboard.renderToDOM(DOM.playerGameboardCells);
+      playerGameboard.renderToDOM(DOM.playerGameboardArr);
       if (playerGameboard.allShipsSunk()) {
         console.log('player ships all sunk');
       }
@@ -129,5 +152,5 @@ const game = (function () {
 }());
 game.initialiseGame();
 game.randomShipPlacement(true);
-game.playerGameboard.revealShips(DOM.playerGameboardCells);
+game.playerGameboard.revealShips(DOM.playerGameboardArr);
 export { DOM, game };

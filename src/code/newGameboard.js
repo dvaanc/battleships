@@ -38,9 +38,8 @@ class Gameboard {
   revealShips(DOMBoard) {
     this.board.forEach((index) => {
       const i = this.board.indexOf(index);
-      if (index.hasShip) {
+      if (index.hasShip === true) {
         DOMBoard[i].classList.add('reveal-cell');
-        console.log(DOMBoard[i]);
       }
     });
   }
@@ -58,7 +57,30 @@ class Gameboard {
       const ship = new Ship(type[shipObj]);
       this.fleet.push(ship);
     });
-    // console.log(this.fleet);
+  }
+
+  generateShip(shipType) {
+    let ship = null;
+    switch (shipType) {
+      case 'carrier':
+        ship = new Ship(type.carrier);
+        break;
+      case 'battleship':
+        ship = new Ship(type.battleship);
+        break;
+      case 'cruiser':
+        ship = new Ship(type.cruiser);
+        break;
+      case 'submarine':
+        ship = new Ship(type.submarine);
+        break;
+      case 'destroyer':
+        ship = new Ship(type.destroyer);
+        break;
+      default:
+        return false;
+    }
+    return this.fleet.push(ship);
   }
 
   placeShip(ship, startCoord) {
@@ -166,7 +188,7 @@ class Gameboard {
 
   allShipsSunk() {
     // console.log(this.fleet);
-    console.log(this.fleet.every((ship) => ship.isDestroyed()));
+    // console.log(this.fleet.every((ship) => ship.isDestroyed()));
     return this.fleet.every((ship) => ship.isDestroyed());
   }
 }
