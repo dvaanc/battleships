@@ -17,27 +17,39 @@ const DOM = (function () {
   const placeShipsGameboardArr = Array.from(placeShipsGameboard.children);
   const placeRandomButton = document.querySelector('#place-random');
   const startButton = document.querySelector('#start');
-  console.log(placeShipsCells);
-
-  placeShipsGameboard.addEventListener('click', (e) => {
-    if (e.target.parentNode === placeShipsGameboard) {
-      if (e.target.classList.contains('cell')) {
-        console.log(e.target);
-      }
-    }
-  });
+  let currentShipType = '';
 
   ships.forEach((ship) => {
     ship.addEventListener('dragstart', (e) => {
+      // const shipType = e.dataTransfer.setData('text', e.currentTarget.id);
+      // console.log(shipType);
+      console.log(e.currentTarget.id);
+      currentShipType = e.currentTarget.id;
       e.target.style.opacity = 0.4;
     }, false);
     ship.addEventListener('dragend', (e) => {
       e.target.style.opacity = 1;
-    }, false);
-    ship.addEventListener('dragenter', (e) => {
-      e.target.classList.add('over');
+      currentShipType = '';
     }, false);
   });
+
+  placeShipsGameboard.addEventListener('dragenter', (e) => {
+    if (e.target.parentNode === placeShipsGameboard) {
+      if (e.target.classList.contains('cell')) {
+        console.log(placeShipsGameboardArr.indexOf(e.target));
+        console.log(currentShipType);
+        e.target.classList.add('over');
+      }
+    }
+  }, false);
+
+  placeShipsGameboard.addEventListener('dragleave', (e) => {
+    if (e.target.parentNode === placeShipsGameboard) {
+      if (e.target.classList.contains('cell')) {
+        e.target.classList.remove('over');
+      }
+    }
+  }, false);
 
   enemyGameboard.addEventListener('click', (e) => {
     if (e.target.classList.contains('cell')) {
