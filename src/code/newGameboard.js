@@ -61,44 +61,53 @@ class Gameboard {
   }
 
   grabShip(shipType) {
-    const findCorrectShip = this.fleet.filter((ship) => ship.type === shipType);
-    console.log(findCorrectShip);
-    // switch (shipType) {
-    //   case 'carrier':
-    //     ship = new Ship(type.carrier);
-    //     break;
-    //   case 'battleship':
-    //     ship = new Ship(type.battleship);
-    //     break;
-    //   case 'cruiser':
-    //     ship = new Ship(type.cruiser);
-    //     break;
-    //   case 'submarine':
-    //     ship = new Ship(type.submarine);
-    //     break;
-    //   case 'destroyer':
-    //     ship = new Ship(type.destroyer);
-    //     break;
-    //   default:
-    //     return false;
-    // }
-    // return ship;
+    let ship = null;
+    switch (shipType) {
+      case 'carrier':
+        [ship] = this.fleet;
+        break;
+      case 'battleship':
+        [, ship] = this.fleet;
+        break;
+      case 'cruiser':
+        [, , ship] = this.fleet;
+        break;
+      case 'submarine':
+        [, , , ship] = this.fleet;
+        break;
+      case 'destroyer':
+        [, , , , ship] = this.fleet;
+        break;
+      default:
+        return false;
+    }
+    console.log(ship);
+    return ship;
   }
 
   placeShip(ship, startCoord) {
-    if (this.validPlacement(ship, startCoord)) {
-      return true;
+    if (ship.isVertical === true) {
+      if (this.validPlacement(ship, startCoord)) {
+        return true;
+      }
+      for (let i = 0; i < ship.length; i += 1) {
+        this.board[startCoord + i * 10].shipType = ship.type;
+        this.board[startCoord + i * 10].hasShip = true;
+      }
     }
-    for (let i = 0; i < ship.length; i += 1) {
-      this.board[startCoord + i].shipType = ship.type;
-      this.board[startCoord + i].hasShip = true;
-      // console.log(this.board[startCoord + i]);
+    if (ship.isVertical === false) {
+      if (this.validPlacement(ship, startCoord)) {
+        return true;
+      }
+      for (let i = 0; i < ship.length; i += 1) {
+        this.board[startCoord + i].shipType = ship.type;
+        this.board[startCoord + i].hasShip = true;
+      }
     }
     return null;
   }
 
   randomShipPlacement() {
-    // console.log(this.fleet);
     for (let i = 0; i < this.fleet.length; i += 1) {
       if (this.callRandomNumber(2) === 0) {
         this.fleet[i].isVertical = false;
@@ -114,10 +123,7 @@ class Gameboard {
         return this.randomShipPlacement();
       }
     }
-    // console.log(this.board);
     return null;
-    // console.log(this.fleet[0]);
-    // this.placeShip(this.fleet[0], this.callRandomNumber(this.val));
   }
 
   receiveAttack(coord) {
@@ -160,11 +166,6 @@ class Gameboard {
           console.log('Error! Placement clashes with another placed ship!');
           return true;
         }
-      }
-      for (let i = 0; i < ship.length; i += 1) {
-        this.board[startCoord + i * 10].shipType = ship.type;
-        this.board[startCoord + i * 10].hasShip = true;
-        console.log(this.board[startCoord + i * 10]);
       }
     }
     if (ship.isVertical === false) {

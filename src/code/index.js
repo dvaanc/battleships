@@ -34,6 +34,7 @@ const DOM = (function () {
       console.log(e.target);
       console.log(currentCell);
       e.currentTarget.removeAttribute('draggable');
+      console.log(game.placeShipsGameboard.fleet[0].type);
     });
   });
 
@@ -123,8 +124,8 @@ const game = (function () {
     placeShipsGameboard.generateFleet();
   }
 
-  function placeShip(ship, index) {
-    const shipObj = placeShipsGameboard.generateShip(ship);
+  function placeShip(shipType, index) {
+    const shipObj = placeShipsGameboard.grabShip(shipType);
     if (placeShipsGameboard.validPlacement(shipObj, index)) {
       placeShipsGameboard.placeShip(shipObj, index);
       placeShipsGameboard.renderToDOM(DOM.placeShipsGameboardArr);
@@ -133,7 +134,6 @@ const game = (function () {
     console.log('something went wrong!');
     return false;
   }
-  placeShipsGameboard.grabShip('carrier');
 
   function randomShipPlacement(boolean) {
     if (boolean === true) playerGameboard.randomShipPlacement();
@@ -171,6 +171,7 @@ const game = (function () {
   return {
     gameLoop,
     randomShipPlacement,
+    placeShipsGameboard,
     playerGameboard,
     enemyGameboard,
     initialiseGame,
@@ -179,4 +180,10 @@ const game = (function () {
   };
 }());
 game.initialiseGame();
+// const [first, second, third, fourth, fifth] = game.placeShipsGameboard.fleet;
+let ship = null;
+[, , , , ship] = game.placeShipsGameboard.fleet;
+console.log(ship);
+// console.log(first, second, third, fourth, fifth);
+game.placeShipsGameboard.grabShip('carrier');
 export { DOM, game };
