@@ -57,74 +57,42 @@ class Gameboard {
       const ship = new Ship(type[shipObj]);
       this.fleet.push(ship);
     });
+    console.log(this.fleet);
   }
 
-  generateShip(shipType) {
-    let ship = null;
-    switch (shipType) {
-      case 'carrier':
-        ship = new Ship(type.carrier);
-        break;
-      case 'battleship':
-        ship = new Ship(type.battleship);
-        break;
-      case 'cruiser':
-        ship = new Ship(type.cruiser);
-        break;
-      case 'submarine':
-        ship = new Ship(type.submarine);
-        break;
-      case 'destroyer':
-        ship = new Ship(type.destroyer);
-        break;
-      default:
-        return false;
-    }
-    return this.fleet.push(ship);
+  grabShip(shipType) {
+    const findCorrectShip = this.fleet.filter((ship) => ship.type === shipType);
+    console.log(findCorrectShip);
+    // switch (shipType) {
+    //   case 'carrier':
+    //     ship = new Ship(type.carrier);
+    //     break;
+    //   case 'battleship':
+    //     ship = new Ship(type.battleship);
+    //     break;
+    //   case 'cruiser':
+    //     ship = new Ship(type.cruiser);
+    //     break;
+    //   case 'submarine':
+    //     ship = new Ship(type.submarine);
+    //     break;
+    //   case 'destroyer':
+    //     ship = new Ship(type.destroyer);
+    //     break;
+    //   default:
+    //     return false;
+    // }
+    // return ship;
   }
 
   placeShip(ship, startCoord) {
-    if (ship.isVertical === true) {
-      for (let i = 0; i < ship.length; i += 1) {
-        if (this.isOutOfBounds(startCoord + i * 10)) {
-          // console.log('Out of bounds!');
-          return true;
-        }
-        if (this.board[startCoord + i * 10].hasShip === true) {
-          // console.log('Error! Placement clashes with another placed ship!');
-          return true;
-        }
-      }
-      for (let i = 0; i < ship.length; i += 1) {
-        this.board[startCoord + i * 10].shipType = ship.type;
-        this.board[startCoord + i * 10].hasShip = true;
-        // console.log(this.board[startCoord + i * 10]);
-      }
+    if (this.validPlacement(ship, startCoord)) {
+      return true;
     }
-    if (ship.isVertical === false) {
-      for (let i = 0; i < ship.length; i += 1) {
-        if (this.isOutOfBounds(startCoord + i)) {
-          // console.log('Out of bounds!');
-          return true;
-        }
-        if (i >= 1) {
-          const rounded = Math.ceil(startCoord / 10) * 10;
-          // console.log(rounded);
-          if (startCoord + i >= rounded) {
-            // console.log('continues on next line!');
-            return true;
-          }
-        }
-        if (this.board[startCoord + i].hasShip === true) {
-          // console.log('Error! Placement clashes with another placed ship!');
-          return true;
-        }
-      }
-      for (let i = 0; i < ship.length; i += 1) {
-        this.board[startCoord + i].shipType = ship.type;
-        this.board[startCoord + i].hasShip = true;
-        // console.log(this.board[startCoord + i]);
-      }
+    for (let i = 0; i < ship.length; i += 1) {
+      this.board[startCoord + i].shipType = ship.type;
+      this.board[startCoord + i].hasShip = true;
+      // console.log(this.board[startCoord + i]);
     }
     return null;
   }
@@ -179,6 +147,46 @@ class Gameboard {
   filterByShipType(name) {
     const shipArr = this.board.filter((index) => index.shipType === name);
     return shipArr;
+  }
+
+  validPlacement(ship, startCoord) {
+    if (ship.isVertical === true) {
+      for (let i = 0; i < ship.length; i += 1) {
+        if (this.isOutOfBounds(startCoord + i * 10)) {
+          console.log('Out of bounds!');
+          return true;
+        }
+        if (this.board[startCoord + i * 10].hasShip === true) {
+          console.log('Error! Placement clashes with another placed ship!');
+          return true;
+        }
+      }
+      for (let i = 0; i < ship.length; i += 1) {
+        this.board[startCoord + i * 10].shipType = ship.type;
+        this.board[startCoord + i * 10].hasShip = true;
+        console.log(this.board[startCoord + i * 10]);
+      }
+    }
+    if (ship.isVertical === false) {
+      for (let i = 0; i < ship.length; i += 1) {
+        if (this.isOutOfBounds(startCoord + i)) {
+          console.log('Out of bounds!');
+          return true;
+        }
+        if (i >= 1) {
+          const rounded = Math.ceil(startCoord / 10) * 10;
+          if (startCoord + i >= rounded) {
+            console.log('continues on next line!');
+            return true;
+          }
+        }
+        if (this.board[startCoord + i].hasShip === true) {
+          console.log('Error! Placement clashes with another placed ship!');
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   isOutOfBounds(coord) {

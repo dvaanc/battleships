@@ -17,27 +17,33 @@ const DOM = (function () {
   const placeShipsGameboardArr = Array.from(placeShipsGameboard.children);
   const placeRandomButton = document.querySelector('#place-random');
   const startButton = document.querySelector('#start');
-  let currentShipType = '';
+  let currentShipType = null;
+  let currentCell = null;
 
   ships.forEach((ship) => {
     ship.addEventListener('dragstart', (e) => {
-      // const shipType = e.dataTransfer.setData('text', e.currentTarget.id);
-      // console.log(shipType);
-      console.log(e.currentTarget.id);
       currentShipType = e.currentTarget.id;
       e.target.style.opacity = 0.4;
     }, false);
     ship.addEventListener('dragend', (e) => {
+      currentShipType = null;
       e.target.style.opacity = 1;
       currentShipType = '';
     }, false);
+    ship.addEventListener('dragend', (e) => {
+      console.log(e.target);
+      console.log(currentCell);
+      e.currentTarget.removeAttribute('draggable');
+    });
   });
 
   placeShipsGameboard.addEventListener('dragenter', (e) => {
     if (e.target.parentNode === placeShipsGameboard) {
       if (e.target.classList.contains('cell')) {
-        console.log(placeShipsGameboardArr.indexOf(e.target));
-        console.log(currentShipType);
+        // console.log(placeShipsGameboardArr.indexOf(e.target));
+        // console.log(currentShipType);
+        const i = placeShipsGameboardArr.indexOf(e.target);
+        currentCell = i;
         e.target.classList.add('over');
       }
     }
@@ -92,6 +98,7 @@ const DOM = (function () {
 
   return {
     setMessage,
+    placeShipsGameboardArr,
     playerGameboardArr,
     enemyGameboardArr,
     toggleClicks,
@@ -104,27 +111,35 @@ const game = (function () {
   const computer = new Player('Computer');
   const playerGameboard = new Gameboard();
   const enemyGameboard = new Gameboard();
+  const placeShipsGameboard = new Gameboard();
 
   function initialiseGame() {
+    placeShipsGameboard.clearBoard();
     playerGameboard.clearBoard();
     enemyGameboard.clearBoard();
+    placeShipsGameboard.initialiseBoard();
     playerGameboard.initialiseBoard();
     enemyGameboard.initialiseBoard();
-    playerGameboard.generateFleet();
-    enemyGameboard.generateFleet();
+    placeShipsGameboard.generateFleet();
   }
+
+  function placeShip(ship, index) {
+    const shipObj = placeShipsGameboard.generateShip(ship);
+    if (placeShipsGameboard.validPlacement(shipObj, index)) {
+      placeShipsGameboard.placeShip(shipObj, index);
+      placeShipsGameboard.renderToDOM(DOM.placeShipsGameboardArr);
+      return true;
+    }
+    console.log('something went wrong!');
+    return false;
+  }
+  placeShipsGameboard.grabShip('carrier');
 
   function randomShipPlacement(boolean) {
     if (boolean === true) playerGameboard.randomShipPlacement();
     enemyGameboard.randomShipPlacement();
   }
 
-  // function gameLoop(index) {
-  //   enemyGameboard.receiveAttack(index);
-  //   enemyGameboard.renderToDOM(DOM.enemyGameboardCells);
-  //   if (isGameOver()) {
-  //     DOM.setMessage('Player wins!');
-  //   }
   function gameLoop(coord) {
     if (enemyGameboard.receiveAttack(coord) === true) {
       enemyGameboard.hpHit(enemyGameboard.getNameOfShip(coord));
@@ -160,9 +175,8 @@ const game = (function () {
     enemyGameboard,
     initialiseGame,
     restartGame,
+    placeShip,
   };
 }());
 game.initialiseGame();
-game.randomShipPlacement(true);
-game.playerGameboard.revealShips(DOM.playerGameboardArr);
 export { DOM, game };
