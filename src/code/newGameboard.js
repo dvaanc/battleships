@@ -57,7 +57,6 @@ class Gameboard {
       const ship = new Ship(type[shipObj]);
       this.fleet.push(ship);
     });
-    console.log(this.fleet);
   }
 
   grabShip(shipType) {
@@ -86,23 +85,19 @@ class Gameboard {
   }
 
   placeShip(ship, startCoord) {
-    if (ship.isVertical === true) {
-      if (this.validPlacement(ship, startCoord)) {
-        return true;
-      }
+    if (ship.isVertical) {
       for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i * 10].shipType = ship.type;
         this.board[startCoord + i * 10].hasShip = true;
       }
+      ship.isPlaced = true;
     }
-    if (ship.isVertical === false) {
-      if (this.validPlacement(ship, startCoord)) {
-        return true;
-      }
+    if (!ship.isVertical) {
       for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i].shipType = ship.type;
         this.board[startCoord + i].hasShip = true;
       }
+      ship.isPlaced = true;
     }
     return null;
   }
@@ -116,12 +111,15 @@ class Gameboard {
       }
     }
     for (let i = 0; i < this.fleet.length; i += 1) {
-      if (this.placeShip(this.fleet[i], this.callRandomNumber(this.val)) === true) {
+      const randomCoord = this.callRandomNumber(this.val);
+      const ship = this.fleet[i];
+      if (this.invalidPlacement(ship, randomCoord) === true) {
         this.clearBoard();
         this.initialiseBoard();
         this.generateFleet();
         return this.randomShipPlacement();
       }
+      this.placeShip(ship, randomCoord);
     }
     return null;
   }
@@ -155,7 +153,7 @@ class Gameboard {
     return shipArr;
   }
 
-  validPlacement(ship, startCoord) {
+  invalidPlacement(ship, startCoord) {
     if (ship.isVertical === true) {
       for (let i = 0; i < ship.length; i += 1) {
         if (this.isOutOfBounds(startCoord + i * 10)) {

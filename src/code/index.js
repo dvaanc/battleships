@@ -11,9 +11,9 @@ const DOM = (function () {
   const enemyGameboardArr = Array.from(enemyGameboard.children);
   const restartButton = document.querySelector('#restart');
 
+  const placeShipsModalContainer = document.querySelector('#placeShips');
   const ships = document.querySelectorAll('.ship');
   const placeShipsGameboard = document.querySelector('#placeShips-gameboard');
-  const placeShipsCells = placeShipsGameboard.children;
   const placeShipsGameboardArr = Array.from(placeShipsGameboard.children);
   const placeRandomButton = document.querySelector('#place-random');
   const startButton = document.querySelector('#start');
@@ -58,6 +58,12 @@ const DOM = (function () {
     }
   }, false);
 
+  placeRandomButton.addEventListener('click', (e) => {
+    game.randomShipPlacement(true);
+    placeShipsModalContainer.style.opacity = 0;
+    placeShipsModalContainer.style.pointerEvents = 'none';
+  }, false);
+
   enemyGameboard.addEventListener('click', (e) => {
     if (e.target.classList.contains('cell')) {
       game.gameLoop(enemyGameboardArr.indexOf(e.target));
@@ -65,18 +71,21 @@ const DOM = (function () {
     }
   });
 
+  startButton.addEventListener('click', () => {
+
+  }, false);
+
   restartButton.addEventListener('click', () => {
     game.restartGame();
   });
 
-  function clearBoard() {
-    playerGameboardArr.forEach((cell) => {
+  function clearBoard(gameboard) {
+    gameboard.forEach((cell) => {
+      // cell2 var is the parameter, had to declare another var to meet eslint requirements
+      const cell2 = cell;
       cell.classList.remove('hit');
-      cell.innerText = '';
-    });
-    enemyGameboardArr.forEach((cell) => {
-      cell.classList.remove('hit');
-      cell.innerText = '';
+      cell.classList.remove('reveal-cell');
+      cell2.innerText = '';
     });
   }
 
@@ -87,8 +96,11 @@ const DOM = (function () {
 
   function toggleClicks(boolean) {
     if (boolean) {
-      return enemyGameboard.classList.add('disable');
+      playerGameboard.classList.add('disable');
+      enemyGameboard.classList.add('disable');
+      return true;
     }
+    playerGameboard.classList.remove('disable');
     enemyGameboard.classList.remove('disable');
     return false;
   }
@@ -112,23 +124,21 @@ const game = (function () {
   const computer = new Player('Computer');
   const playerGameboard = new Gameboard();
   const enemyGameboard = new Gameboard();
-  const placeShipsGameboard = new Gameboard();
 
   function initialiseGame() {
-    placeShipsGameboard.clearBoard();
     playerGameboard.clearBoard();
     enemyGameboard.clearBoard();
-    placeShipsGameboard.initialiseBoard();
     playerGameboard.initialiseBoard();
     enemyGameboard.initialiseBoard();
-    placeShipsGameboard.generateFleet();
+    playerGameboard.generateFleet();
+    enemyGameboard.generateFleet();
   }
 
   function placeShip(shipType, index) {
-    const shipObj = placeShipsGameboard.grabShip(shipType);
-    if (placeShipsGameboard.validPlacement(shipObj, index)) {
-      placeShipsGameboard.placeShip(shipObj, index);
-      placeShipsGameboard.renderToDOM(DOM.placeShipsGameboardArr);
+    const shipObj = playerGameboard.grabShip(shipType);
+    if (playerGameboard.validPlacement(shipObj, index)) {
+      playerGameboard.placeShip(shipObj, index);
+      playerGameboard.renderToDOM(DOM.placeShipsGameboardArr);
       return true;
     }
     console.log('something went wrong!');
@@ -136,23 +146,26 @@ const game = (function () {
   }
 
   function randomShipPlacement(boolean) {
-    if (boolean === true) playerGameboard.randomShipPlacement();
+    initialiseGame();
+    if (boolean) playerGameboard.randomShipPlacement();
     enemyGameboard.randomShipPlacement();
+    playerGameboard.revealShips(DOM.playerGameboardArr);
   }
 
   function gameLoop(coord) {
-    if (enemyGameboard.receiveAttack(coord) === true) {
+    if (enemyGameboard.receiveAttack(coord)) {
       enemyGameboard.hpHit(enemyGameboard.getNameOfShip(coord));
       enemyGameboard.renderToDOM(DOM.enemyGameboardArr);
       if (enemyGameboard.allShipsSunk()) {
-        console.log('enemy all ships sunk');
+        DOM.setMessage('Player wins! All enemy ships have been destroyed!');
         DOM.toggleClicks(true);
       }
       computer.randomMove();
       playerGameboard.receiveAttack(computer.currentMove);
       playerGameboard.renderToDOM(DOM.playerGameboardArr);
       if (playerGameboard.allShipsSunk()) {
-        console.log('player ships all sunk');
+        DOM.setMessage('Enemy wins! All player ships have been destroyed!');
+        DOM.toggleClicks(true);
       }
       return true;
     }
@@ -160,7 +173,9 @@ const game = (function () {
   }
 
   function restartGame() {
-    DOM.clearBoard();
+    DOM.clearBoard(DOM.playerGameboardArr);
+    DOM.clearBoard(DOM.enemyGameboardArr);
+    DOM.clearBoard(DOM.placeShipsGameboardArr);
     initialiseGame();
     randomShipPlacement(true);
     player.clearPastHits();
@@ -171,7 +186,6 @@ const game = (function () {
   return {
     gameLoop,
     randomShipPlacement,
-    placeShipsGameboard,
     playerGameboard,
     enemyGameboard,
     initialiseGame,
@@ -182,8 +196,8 @@ const game = (function () {
 game.initialiseGame();
 // const [first, second, third, fourth, fifth] = game.placeShipsGameboard.fleet;
 let ship = null;
-[, , , , ship] = game.placeShipsGameboard.fleet;
+[, , , , ship] = game.playerGameboard.fleet;
 console.log(ship);
 // console.log(first, second, third, fourth, fifth);
-game.placeShipsGameboard.grabShip('carrier');
+game.playerGameboard.grabShip('carrier');
 export { DOM, game };

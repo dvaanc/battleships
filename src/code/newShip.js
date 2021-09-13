@@ -28,6 +28,7 @@ class Ship {
     this.length = ship.length;
     this.hp = Array(this.length).fill(null);
     this.isVertical = vertical;
+    this.isPlaced = null;
   }
 
   hit(index) {
