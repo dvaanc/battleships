@@ -21,6 +21,15 @@ const DOM = (function () {
   let currentCell = null;
 
   ships.forEach((ship) => {
+    ship.addEventListener('click', (e) => {
+      if (e.target.classList.contains('part')) {
+        return e.target.parentNode.classList.toggle('vertical');
+      }
+      if (e.target.classList.contains('ship')) {
+        return e.target.classList.toggle('vertical');
+      }
+      return null;
+    });
     ship.addEventListener('dragstart', (e) => {
       currentShipType = e.currentTarget.id;
       e.target.style.opacity = 0.4;
@@ -31,11 +40,10 @@ const DOM = (function () {
       currentShipType = '';
     }, false);
     ship.addEventListener('dragend', (e) => {
-      console.log(e.target);
-      console.log(currentCell);
-      e.currentTarget.removeAttribute('draggable');
-      console.log(game.placeShipsGameboard.fleet[0].type);
-    });
+      const shipType = e.currentTarget.id;
+      game.placeShip(shipType, currentCell);
+      // e.currentTarget.removeAttribute('draggable');
+    }, false);
   });
 
   placeShipsGameboard.addEventListener('dragenter', (e) => {
@@ -60,8 +68,6 @@ const DOM = (function () {
 
   placeRandomButton.addEventListener('click', (e) => {
     game.randomShipPlacement(true);
-    placeShipsModalContainer.style.opacity = 0;
-    placeShipsModalContainer.style.pointerEvents = 'none';
   }, false);
 
   enemyGameboard.addEventListener('click', (e) => {
@@ -72,12 +78,17 @@ const DOM = (function () {
   });
 
   startButton.addEventListener('click', () => {
-
+    game.startGame();
   }, false);
 
   restartButton.addEventListener('click', () => {
     game.restartGame();
   });
+
+  function hidePlaceShipsGameboard() {
+    placeShipsModalContainer.style.opacity = 0;
+    placeShipsModalContainer.style.pointerEvents = 'none';
+  }
 
   function clearBoard(gameboard) {
     gameboard.forEach((cell) => {
@@ -116,6 +127,7 @@ const DOM = (function () {
     enemyGameboardArr,
     toggleClicks,
     clearBoard,
+    hidePlaceShipsGameboard,
   };
 }());
 
@@ -136,7 +148,8 @@ const game = (function () {
 
   function placeShip(shipType, index) {
     const shipObj = playerGameboard.grabShip(shipType);
-    if (playerGameboard.validPlacement(shipObj, index)) {
+    console.log(shipObj);
+    if (!playerGameboard.invalidPlacement(shipObj, index)) {
       playerGameboard.placeShip(shipObj, index);
       playerGameboard.renderToDOM(DOM.placeShipsGameboardArr);
       return true;
@@ -145,11 +158,21 @@ const game = (function () {
     return false;
   }
 
+  function startGame() {
+    if (playerGameboard.allShipsPlaced()) {
+      enemyGameboard.randomShipPlacement();
+      playerGameboard.revealShips(DOM.playerGameboardArr);
+      DOM.hidePlaceShipsGameboard();
+      return true;
+    }
+    return false;
+  }
   function randomShipPlacement(boolean) {
     initialiseGame();
     if (boolean) playerGameboard.randomShipPlacement();
     enemyGameboard.randomShipPlacement();
     playerGameboard.revealShips(DOM.playerGameboardArr);
+    DOM.hidePlaceShipsGameboard();
   }
 
   function gameLoop(coord) {
@@ -191,6 +214,7 @@ const game = (function () {
     initialiseGame,
     restartGame,
     placeShip,
+    startGame,
   };
 }());
 game.initialiseGame();

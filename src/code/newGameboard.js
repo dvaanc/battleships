@@ -84,7 +84,8 @@ class Gameboard {
     return ship;
   }
 
-  placeShip(ship, startCoord) {
+  placeShip(shipObj, startCoord) {
+    const ship = shipObj;
     if (ship.isVertical) {
       for (let i = 0; i < ship.length; i += 1) {
         this.board[startCoord + i * 10].shipType = ship.type;
@@ -157,11 +158,11 @@ class Gameboard {
     if (ship.isVertical === true) {
       for (let i = 0; i < ship.length; i += 1) {
         if (this.isOutOfBounds(startCoord + i * 10)) {
-          console.log('Out of bounds!');
+          // console.log('Out of bounds!');
           return true;
         }
         if (this.board[startCoord + i * 10].hasShip === true) {
-          console.log('Error! Placement clashes with another placed ship!');
+          // console.log('Error! Placement clashes with another placed ship!');
           return true;
         }
       }
@@ -169,18 +170,18 @@ class Gameboard {
     if (ship.isVertical === false) {
       for (let i = 0; i < ship.length; i += 1) {
         if (this.isOutOfBounds(startCoord + i)) {
-          console.log('Out of bounds!');
+          // console.log('Out of bounds!');
           return true;
         }
         if (i >= 1) {
           const rounded = Math.ceil(startCoord / 10) * 10;
           if (startCoord + i >= rounded) {
-            console.log('continues on next line!');
+            // console.log('continues on next line!');
             return true;
           }
         }
         if (this.board[startCoord + i].hasShip === true) {
-          console.log('Error! Placement clashes with another placed ship!');
+          // console.log('Error! Placement clashes with another placed ship!');
           return true;
         }
       }
@@ -191,6 +192,12 @@ class Gameboard {
   isOutOfBounds(coord) {
     if (coord < 0 || coord > this.board.length - 1) return true;
     return false;
+  }
+
+  allShipsPlaced() {
+    console.log(this.fleet);
+    console.log(this.fleet.every((ship) => ship.isPlaced === true));
+    return this.fleet.every((ship) => ship.isPlaced === true);
   }
 
   allShipsSunk() {
