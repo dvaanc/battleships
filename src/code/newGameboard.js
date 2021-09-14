@@ -1,4 +1,3 @@
-import { tsThisType } from '@babel/types';
 import { type, Ship } from './newShip';
 
 // eslint-disable-next-line no-unused-vars
@@ -80,7 +79,6 @@ class Gameboard {
       default:
         return false;
     }
-    console.log(ship);
     return ship;
   }
 
@@ -195,8 +193,6 @@ class Gameboard {
   }
 
   allShipsPlaced() {
-    console.log(this.fleet);
-    console.log(this.fleet.every((ship) => ship.isPlaced === true));
     return this.fleet.every((ship) => ship.isPlaced === true);
   }
 

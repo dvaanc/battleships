@@ -23,7 +23,7 @@ const type = {
 };
 
 class Ship {
-  constructor(ship, vertical = true) {
+  constructor(ship, vertical = false) {
     this.type = ship.type;
     this.length = ship.length;
     this.hp = Array(this.length).fill(null);
@@ -33,9 +33,7 @@ class Ship {
 
   hit(index) {
     this.hp[index] = true;
-    if (this.isDestroyed()) {
-      console.log(`${this.type} has been destroyed!`);
-    }
+    if (this.isDestroyed()) return true;
     return this.hp;
   }
 

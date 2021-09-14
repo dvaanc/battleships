@@ -1,10 +1,7 @@
-/* eslint-disable no-use-before-define */
-import { type, Ship } from './newShip';
 import Player from './newPlayer';
 import Gameboard from './newGameboard';
 
-// eslint-disable-next-line func-names
-const DOM = (function () {
+const DOM = (() => {
   const playerGameboard = document.querySelector('#player');
   const enemyGameboard = document.querySelector('#enemy');
   const playerGameboardArr = Array.from(playerGameboard.children);
@@ -23,6 +20,7 @@ const DOM = (function () {
   ships.forEach((ship) => {
     ship.addEventListener('click', (e) => {
       if (e.target.classList.contains('part')) {
+        game.toggleShipAxis(e.currentTarget.id);
         return e.target.parentNode.classList.toggle('vertical');
       }
       if (e.target.classList.contains('ship')) {
@@ -32,25 +30,20 @@ const DOM = (function () {
     });
     ship.addEventListener('dragstart', (e) => {
       currentShipType = e.currentTarget.id;
-      e.target.style.opacity = 0.4;
-    }, false);
-    ship.addEventListener('dragend', (e) => {
-      currentShipType = null;
       e.target.style.opacity = 1;
-      currentShipType = '';
     }, false);
     ship.addEventListener('dragend', (e) => {
-      const shipType = e.currentTarget.id;
-      game.placeShip(shipType, currentCell);
-      // e.currentTarget.removeAttribute('draggable');
+      if (game.placeShip(currentShipType, currentCell)) {
+        e.currentTarget.removeAttribute('draggable');
+        e.currentTarget.style.pointerEvents = 'none';
+        e.currentTarget.style.opacity = 0.4;
+      }
     }, false);
   });
 
   placeShipsGameboard.addEventListener('dragenter', (e) => {
     if (e.target.parentNode === placeShipsGameboard) {
       if (e.target.classList.contains('cell')) {
-        // console.log(placeShipsGameboardArr.indexOf(e.target));
-        // console.log(currentShipType);
         const i = placeShipsGameboardArr.indexOf(e.target);
         currentCell = i;
         e.target.classList.add('over');
@@ -66,14 +59,13 @@ const DOM = (function () {
     }
   }, false);
 
-  placeRandomButton.addEventListener('click', (e) => {
+  placeRandomButton.addEventListener('click', () => {
     game.randomShipPlacement(true);
   }, false);
 
   enemyGameboard.addEventListener('click', (e) => {
     if (e.target.classList.contains('cell')) {
       game.gameLoop(enemyGameboardArr.indexOf(e.target));
-      console.log(enemyGameboardArr.indexOf(e.target));
     }
   });
 
@@ -85,14 +77,28 @@ const DOM = (function () {
     game.restartGame();
   });
 
+  function resetShips() {
+    ships.forEach((shipType) => {
+      const ship = shipType;
+      ship.classList.remove('vertical');
+      ship.style.pointerEvents = 'auto';
+      ship.style.opacity = 1;
+      ship.setAttribute('draggable', 'true');
+    });
+  }
+
   function hidePlaceShipsGameboard() {
     placeShipsModalContainer.style.opacity = 0;
     placeShipsModalContainer.style.pointerEvents = 'none';
   }
 
+  function showPlaceShipsGameboard() {
+    placeShipsModalContainer.style.opacity = 1;
+    placeShipsModalContainer.style.pointerEvents = 'auto';
+  }
+
   function clearBoard(gameboard) {
     gameboard.forEach((cell) => {
-      // cell2 var is the parameter, had to declare another var to meet eslint requirements
       const cell2 = cell;
       cell.classList.remove('hit');
       cell.classList.remove('reveal-cell');
@@ -116,10 +122,6 @@ const DOM = (function () {
     return false;
   }
 
-  function toggleCells(gameboard) {
-    gameboard.classList.toggle('reveal-cell');
-  }
-
   return {
     setMessage,
     placeShipsGameboardArr,
@@ -128,10 +130,12 @@ const DOM = (function () {
     toggleClicks,
     clearBoard,
     hidePlaceShipsGameboard,
+    showPlaceShipsGameboard,
+    resetShips,
   };
-}());
+})();
 
-const game = (function () {
+const game = (() => {
   const player = new Player('player');
   const computer = new Player('Computer');
   const playerGameboard = new Gameboard();
@@ -146,15 +150,22 @@ const game = (function () {
     enemyGameboard.generateFleet();
   }
 
+  function toggleShipAxis(shipType) {
+    const shipObj = playerGameboard.grabShip(shipType);
+    if (shipObj.isVertical === true) {
+      shipObj.isVertical = false;
+    }
+    shipObj.isVertical = true;
+    return null;
+  }
+
   function placeShip(shipType, index) {
     const shipObj = playerGameboard.grabShip(shipType);
-    console.log(shipObj);
     if (!playerGameboard.invalidPlacement(shipObj, index)) {
       playerGameboard.placeShip(shipObj, index);
-      playerGameboard.renderToDOM(DOM.placeShipsGameboardArr);
+      playerGameboard.revealShips(DOM.placeShipsGameboardArr);
       return true;
     }
-    console.log('something went wrong!');
     return false;
   }
 
@@ -192,18 +203,20 @@ const game = (function () {
       }
       return true;
     }
-    return console.log('attack did not occur due to clicking on a miss or already hit target');
+    return false;
   }
 
   function restartGame() {
     DOM.clearBoard(DOM.playerGameboardArr);
     DOM.clearBoard(DOM.enemyGameboardArr);
     DOM.clearBoard(DOM.placeShipsGameboardArr);
+    DOM.setMessage('');
     initialiseGame();
-    randomShipPlacement(true);
     player.clearPastHits();
     computer.clearPastHits();
+    DOM.resetShips();
     DOM.toggleClicks();
+    DOM.showPlaceShipsGameboard();
   }
 
   return {
@@ -215,13 +228,8 @@ const game = (function () {
     restartGame,
     placeShip,
     startGame,
+    toggleShipAxis,
   };
-}());
+})();
 game.initialiseGame();
-// const [first, second, third, fourth, fifth] = game.placeShipsGameboard.fleet;
-let ship = null;
-[, , , , ship] = game.playerGameboard.fleet;
-console.log(ship);
-// console.log(first, second, third, fourth, fifth);
-game.playerGameboard.grabShip('carrier');
 export { DOM, game };
